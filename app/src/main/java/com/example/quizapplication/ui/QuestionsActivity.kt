@@ -28,7 +28,6 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var questionsList: MutableList<Question>
     private var selectedOptionPosition = 0
     private lateinit var checkButton: Button
-    private var questionscounter = 0
     private var selectedAnswer = 0
     private lateinit var currentQuestion: Question
     private var answered = false
@@ -52,31 +51,30 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
         textViewOptionThree.setOnClickListener(this)
         textViewOptionFour.setOnClickListener(this)
         checkButton.setOnClickListener(this)
-
         questionsList = Constants.getQuestions()
         showNextQuestion()
     }
 
     private fun showNextQuestion() {
         resetOptions()
-        val question = questionsList[currentposition - 1]
-        flaqImage.setImageResource(question.image)
+
+        currentQuestion = questionsList[currentposition - 1]
+
+        flaqImage.setImageResource(currentQuestion.image)
         progressBar.progress = currentposition
         textViewProgress.text = "$currentposition/${progressBar.max}"
-        textViewQuestion.text = question.question
-        textViewOptionOne.text = question.optionOne
-        textViewOptionTwo.text = question.optionTwo
-        textViewOptionThree.text = question.optionThree
-        textViewOptionFour.text = question.optionFour
+        textViewQuestion.text = currentQuestion.question
+        textViewOptionOne.text = currentQuestion.optionOne
+        textViewOptionTwo.text = currentQuestion.optionTwo
+        textViewOptionThree.text = currentQuestion.optionThree
+        textViewOptionFour.text = currentQuestion.optionFour
 
-        if (currentposition < questionsList.size) {
-            checkButton.text = "CHECK"
-            currentQuestion = questionsList[currentposition - 1]
-        } else {
+        if (currentposition == questionsList.size) {
             checkButton.text = "FINISH"
+        } else {
+            checkButton.text = "CHECK"
         }
-        currentposition++
-        questionscounter++
+
         answered = false
     }
 
@@ -117,6 +115,7 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 if (!answered) {
                     checkAnswer()
                 } else {
+                    currentposition++
                     showNextQuestion()
                 }
             }
@@ -202,5 +201,38 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
         checkButton.text = "NEXT"
+        showSolution()
+    }
+    private fun showSolution(){
+        when (currentQuestion.correctAnswer) {
+            1 -> {
+                textViewOptionOne.background =
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.correct_option_border_bg
+                    )
+            }
+            2 -> {
+                textViewOptionTwo.background =
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.correct_option_border_bg
+                    )
+            }
+            3 -> {
+                textViewOptionThree.background =
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.correct_option_border_bg
+                    )
+            }
+            4 -> {
+                textViewOptionFour.background =
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.correct_option_border_bg
+                    )
+            }
+        }
     }
 }
